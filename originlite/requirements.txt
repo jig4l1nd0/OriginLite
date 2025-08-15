@@ -1,0 +1,9 @@
+streamlit<=1.12.0
+pandas>=2.1
+plotly>=5.22
+numpy>=1.26
+scipy>=1.13
+numexpr>=2.10
+kaleido>=0.2
+pytest>=8.0
+altair>=4.2,<5
