@@ -1,43 +1,40 @@
 # Byte-compiled / optimized / DLL files
+# Python cache & bytecode
 __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
-# Virtual environment
+# Virtual environments (ensure local venvs aren't committed)
 .venv/
 venv/
+env/
 ENV/
 .env
 .env.*
+.olite_venv/
+.Python
 
-# Distribution / packaging
+# Packaging / build
 build/
 dist/
-.eggs/
+wheels/
 *.egg-info/
-*.egg
- wheels/
+.eggs/
+pip-wheel-metadata/
+MANIFEST
 
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
+# Logs & profiling
+*.log
 pip-log.txt
 pip-delete-this-directory.txt
+profile*
 
-# Unit test / coverage reports
+# Tests & coverage
 htmlcov/
 .tox/
 .nox/
-.coverage
-.coverage.*
+.coverage*
 .cache
-pytest_cache/
-.coverage
 nosetests.xml
 coverage.xml
 *.cover
@@ -45,50 +42,43 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# mypy
+# Type checker caches
 .mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
 .pyre/
+.pytype/
+cython_debug/
 
-# Logs
-logs/
-*.log
+# Jupyter / IPython
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
 
-# IDE
+# pyenv / version
+.python-version
+
+# Editors & OS
 .vscode/
 .idea/
-*.swp
-
-# Data / artifacts
-*.xrdml
-*.zip
-*.csv
-*.tsv
-*.xls*
-*.parquet
-*.h5
-*.hdf5
-*.sqlite3
-*.db
-
-# Streamlit
-.streamlit/secrets.toml
-.streamlit/config.toml
-
-# MacOS
 .DS_Store
+*.swp
+*.tmp
+~$*
 
-# Images cache
-*.png
-*.jpg
-*.jpeg
-*.gif
+# Streamlit secrets & state
+.streamlit/secrets.toml
 
-# Misc
-Thumbs.db
+# Local data (raw / large) - adjust if you want some sample data tracked
+data/
+*.xrdml
+*.csv
+*.txt
+
+# Runtime artifacts (session / uploads)
+_uploaded.olite
+current.olite
+
+# Node modules (future frontend)
+node_modules/
+
+# Dependency lock (uncomment to ignore specific managers)
+# poetry.lock
