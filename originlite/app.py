@@ -83,18 +83,37 @@ with brand_ct:
             st.session_state['sidebar_brand_logo_mime'] = (
                 brand_file.type or 'image/png'
             )
+    # URL input (second column)
+    with bl_cols[1]:
+        logo_url = st.text_input(
+            "Logo URL",
+            value=st.session_state.get('sidebar_brand_logo_url', ''),
+            placeholder="https://.../logo.png",
+            help="Optional remote image URL (overrides uploaded file).",
+        )
+        if logo_url:
+            st.session_state['sidebar_brand_logo_url'] = logo_url.strip()
+        else:
+            st.session_state.pop('sidebar_brand_logo_url', None)
     # Build header HTML (prefer existing stored bytes if file removed later)
+    logo_url_final = st.session_state.get('sidebar_brand_logo_url')
     logo_bytes = st.session_state.get('sidebar_brand_logo_bytes')
     logo_mime = st.session_state.get('sidebar_brand_logo_mime', 'image/png')
-    if logo_bytes:
+    img_tag = ""
+    if logo_url_final:
+        # Trust provided URL (let browser load it)
+        safe_url = logo_url_final
+        img_tag = (
+            f"<img src='{safe_url}' style='height:36px;max-height:36px;"
+            "margin-right:0.5rem;'/>"
+        )
+    elif logo_bytes:
         import base64 as _b64
         _b64img = _b64.b64encode(logo_bytes).decode('utf-8')
         img_tag = (
             f"<img src='data:{logo_mime};base64:{_b64img}' "
             "style='height:36px;max-height:36px;margin-right:0.5rem;'/>"
         )
-    else:
-        img_tag = ""
     st.markdown(
         f"""
         <div style='display:flex;align-items:center;margin-bottom:0.75rem;'>
@@ -102,12 +121,16 @@ with brand_ct:
         </div>
         """, unsafe_allow_html=True,
     )
-    if logo_bytes and st.button(
-        "Remove logo", key="sidebar_brand_logo_remove"
-    ):
-        st.session_state.pop('sidebar_brand_logo_bytes', None)
-        st.session_state.pop('sidebar_brand_logo_mime', None)
-        st.experimental_rerun()
+    # Removal buttons
+    rem_cols = st.columns([1, 1])
+    with rem_cols[0]:
+        if (logo_bytes or logo_url_final) and st.button(
+            "Remove logo", key="sidebar_brand_logo_remove"
+        ):
+            st.session_state.pop('sidebar_brand_logo_bytes', None)
+            st.session_state.pop('sidebar_brand_logo_mime', None)
+            st.session_state.pop('sidebar_brand_logo_url', None)
+            st.experimental_rerun()
 # Theme selector hidden: using the first theme by default.
 theme = list(THEMES.keys())[0]
 set_theme(theme)
