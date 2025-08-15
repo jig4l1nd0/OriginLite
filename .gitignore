@@ -72,6 +72,7 @@ data/
 *.xrdml
 *.csv
 *.txt
+*.zip
 
 # Runtime artifacts (session / uploads)
 _uploaded.olite
