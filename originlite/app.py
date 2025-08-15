@@ -60,7 +60,54 @@ if 'startup_initialized' not in st.session_state:
         st.session_state['startup_initialized'] = True
         st.sidebar.info("Startup: initialized (session persistent)")
 
-st.sidebar.title("OriginLite")
+"""Sidebar brand header with optional inline logo upload."""
+# Inline brand header (image + title)
+brand_ct = st.sidebar.container()
+with brand_ct:
+    # Brand logo upload (collapsed label)
+    bl_cols = st.columns([1, 4])
+    with bl_cols[0]:
+        brand_file = st.file_uploader(
+            "Brand",
+            type=["png", "jpg", "jpeg", "gif", "svg"],
+            key="sidebar_brand_logo_upload",
+            label_visibility="collapsed",
+            help=(
+                "Upload a small logo to show next to the app title."
+            ),
+        )
+        if brand_file is not None:
+            st.session_state['sidebar_brand_logo_bytes'] = (
+                brand_file.getvalue()
+            )
+            st.session_state['sidebar_brand_logo_mime'] = (
+                brand_file.type or 'image/png'
+            )
+    # Build header HTML (prefer existing stored bytes if file removed later)
+    logo_bytes = st.session_state.get('sidebar_brand_logo_bytes')
+    logo_mime = st.session_state.get('sidebar_brand_logo_mime', 'image/png')
+    if logo_bytes:
+        import base64 as _b64
+        _b64img = _b64.b64encode(logo_bytes).decode('utf-8')
+        img_tag = (
+            f"<img src='data:{logo_mime};base64:{_b64img}' "
+            "style='height:36px;max-height:36px;margin-right:0.5rem;'/>"
+        )
+    else:
+        img_tag = ""
+    st.markdown(
+        f"""
+        <div style='display:flex;align-items:center;margin-bottom:0.75rem;'>
+            {img_tag}<h1 style='font-size:1.6rem;margin:0;'>OriginLite</h1>
+        </div>
+        """, unsafe_allow_html=True,
+    )
+    if logo_bytes and st.button(
+        "Remove logo", key="sidebar_brand_logo_remove"
+    ):
+        st.session_state.pop('sidebar_brand_logo_bytes', None)
+        st.session_state.pop('sidebar_brand_logo_mime', None)
+        st.experimental_rerun()
 # Theme selector hidden: using the first theme by default.
 theme = list(THEMES.keys())[0]
 set_theme(theme)
