@@ -24,6 +24,7 @@ from originlite.ui.sections import (
 )
 from originlite.ui.sections_export import export_sections
 import base64
+import plotly.graph_objects as go
 
 st.set_page_config(page_title="OriginLite", layout="wide")
 
@@ -454,6 +455,28 @@ for (ctx, tab) in zip(st.session_state['plot_contexts'], plot_tabs):
                 )
             except Exception as e:  # noqa: BLE001
                 st.error(f"Fallback build failed: {e}")
+
+        # Emergency rebuild if figure exists but has zero traces
+        if (
+            fig_local is not None
+            and (
+                not getattr(fig_local, 'data', None)
+                or len(fig_local.data) == 0
+            )
+            and x and y
+            and y in df.columns
+            and x in df.columns
+        ):
+            st.warning(
+                "Figure contained no traces; performing emergency rebuild.",
+                icon="⚠️",
+            )
+            try:
+                fig_local = go.Figure(
+                    data=[go.Scatter(x=df[x], y=df[y], mode='markers', name=y)]
+                )
+            except Exception as e:  # noqa: BLE001
+                st.error(f"Emergency rebuild failed: {e}")
 
     # Style section per plot (applies formatting and overlays
     # including logo)
