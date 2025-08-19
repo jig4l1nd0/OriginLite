@@ -313,19 +313,19 @@ def sidebar_chart_section(
             y_err = None
         per_trace_errors = {}
         if multi_y:
-            with st.expander("Per-trace Y errors", expanded=False):
-                st.caption(
-                    "Define specific error columns per series. Overrides "
-                    "common Y error. Leave None to use the common one."
+            # Avoid nested expander (Streamlit disallows). Use a container.
+            st.markdown("**Per-trace Y errors**")
+            st.caption(
+                "Override common Y error per series. Leave None for default."
+            )
+            for yi in multi_y:
+                per_err = st.selectbox(
+                    f"Y error for {yi}",
+                    [None] + [c for c in df.columns if c != yi],
+                    key=k(f"err_{yi}"),
                 )
-                for yi in multi_y:
-                    per_err = st.selectbox(
-                        f"Y error for {yi}",
-                        [None] + [c for c in df.columns if c != yi],
-                        key=k(f"err_{yi}"),
-                    )
-                    if per_err:
-                        per_trace_errors[yi] = per_err
+                if per_err:
+                    per_trace_errors[yi] = per_err
         overlay_multi = False
         subplot_orientation = None
         if multi_y:
